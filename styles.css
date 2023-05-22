@@ -94,3 +94,10 @@ table td {
   padding: 0.5em;
   border: 1px solid lightgrey;
 }
+
+#btnFormContainer {
+  width: min-content;
+  border: 1px solid black;
+  padding: 10px;
+  margin-top: 30px;
+}

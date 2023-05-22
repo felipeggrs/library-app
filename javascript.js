@@ -1,5 +1,6 @@
 const myLibrary = [];
 const tbody = document.querySelector("tbody");
+const body = document.querySelector("body");
 
 // Book constructor
 function Book(title, author, pages, read) {
@@ -21,52 +22,148 @@ function addBookToLibrary(title, author, pages, read) {
   return myLibrary.push(newBook);
 }
 
-// button
+// open form button
 const newBookBtn = document.getElementById("newBookBtn");
+const eventListener = () => {
+  // create book form after click
+  const btnFormContainer = document.createElement("div");
+  btnFormContainer.setAttribute("id", "btnFormContainer");
 
-newBookBtn.addEventListener("click", () => {
-  const userTitle = prompt("Book title");
-  const userAuthor = prompt("Book author");
-  const userPages = prompt("How many pages");
-  const userRead = prompt("Already read? Yes/No");
+  const btnForm = document.createElement("form");
+  btnForm.setAttribute("method", "post");
+  btnForm.setAttribute("action", "https://www.google.com");
 
-  addBookToLibrary(userTitle, userAuthor, userPages, userRead);
+  // book title
+  const titleInputLabel = document.createElement("label");
+  titleInputLabel.setAttribute("for", "titleInput");
+  titleInputLabel.textContent = "Title: ";
 
-  const tr = document.createElement("tr");
-  tbody.appendChild(tr);
+  const titleInput = document.createElement("input");
+  titleInput.setAttribute("id", "titleInput");
+  titleInput.setAttribute("type", "text");
+  titleInput.setAttribute("name", "titleInput");
+  titleInput.setAttribute("placeholder", "Book Title");
 
-  // Display title
-  const newTitle = document.createElement("td");
-  tr.appendChild(newTitle);
-  newTitle.textContent = userTitle;
+  // author
+  const authorInputLabel = document.createElement("label");
+  authorInputLabel.setAttribute("for", "authorInput");
+  authorInputLabel.textContent = "Author: ";
 
-  // Display Author
-  const newAuthor = document.createElement("td");
-  tr.appendChild(newAuthor);
-  newAuthor.textContent = userAuthor;
+  const authorInput = document.createElement("input");
+  authorInput.setAttribute("type", "text");
+  authorInput.setAttribute("name", "authorInput");
+  authorInput.setAttribute("placeholder", "Book Author");
 
-  // Display number of pages
-  const newPages = document.createElement("td");
-  tr.appendChild(newPages);
-  newPages.textContent = userPages;
+  // n of pages
+  const pagesInputLabel = document.createElement("label");
+  pagesInputLabel.setAttribute("for", "pagesInput");
+  pagesInputLabel.textContent = "Pages: ";
 
-  // Display Read? Yes/No
-  const newRead = document.createElement("td");
-  tr.appendChild(newRead);
-  newRead.textContent = userRead;
-  return console.log(myLibrary);
-});
+  const pagesInput = document.createElement("input");
+  pagesInput.setAttribute("type", "text");
+  pagesInput.setAttribute("name", "pagesInput");
+  pagesInput.setAttribute("placeholder", "Number of pages");
+
+  // read? yes/no
+  const readInputLabel = document.createElement("label");
+  readInputLabel.setAttribute("for", "readInput");
+  readInputLabel.textContent = "Read: ";
+
+  const readInput = document.createElement("input");
+  readInput.setAttribute("type", "text");
+  readInput.setAttribute("name", "readInput");
+  readInput.setAttribute("placeholder", "Read? yes/no");
+
+  // print form
+  body.appendChild(btnFormContainer);
+  btnFormContainer.appendChild(btnForm);
+  btnForm.appendChild(titleInputLabel);
+  btnForm.appendChild(titleInput);
+  btnForm.appendChild(authorInputLabel);
+  btnForm.appendChild(authorInput);
+  btnForm.appendChild(pagesInputLabel);
+  btnForm.appendChild(pagesInput);
+  btnForm.appendChild(readInputLabel);
+  btnForm.appendChild(readInput);
+
+  // add book button
+  const addBookBtn = document.createElement("button");
+  addBookBtn.textContent = "Add Book";
+  body.appendChild(addBookBtn);
+
+  addBookBtn.addEventListener("click", () => {
+    const userTitle = titleInput.value;
+    const userAuthor = authorInput.value;
+    const userPages = pagesInput.value;
+    const userRead = readInput.value;
+
+    addBookToLibrary(userTitle, userAuthor, userPages, userRead);
+
+    const tr = document.createElement("tr");
+    tbody.appendChild(tr);
+
+    // Display title
+    const newTitle = document.createElement("td");
+    tr.appendChild(newTitle);
+    newTitle.textContent = userTitle;
+
+    // Display Author
+    const newAuthor = document.createElement("td");
+    tr.appendChild(newAuthor);
+    newAuthor.textContent = userAuthor;
+
+    // Display number of pages
+    const newPages = document.createElement("td");
+    tr.appendChild(newPages);
+    newPages.textContent = userPages;
+
+    // Display Read? Yes/No
+    const newRead = document.createElement("td");
+    tr.appendChild(newRead);
+    newRead.textContent = userRead;
+
+    // remove button works since the data-number value from the tr (table row element) and the data number of the remove button are the same value upon its creation
+    const newRemove = document.createElement("button");
+    const lastChild = tbody.lastElementChild.getAttribute("data-number");
+    newRemove.setAttribute("data-number", lastChild);
+    tr.setAttribute("data-number", lastChild);
+    tr.appendChild(newRemove);
+    newRemove.textContent = "X";
+    newRemove.addEventListener("click", removeBook);
+
+    // reset input values after adding to library
+    titleInput.value = "";
+    authorInput.value = "";
+    pagesInput.value = "";
+    readInput.value = "";
+  });
+
+  // allows only 1 form
+  newBookBtn.removeEventListener("click", eventListener);
+};
+
+newBookBtn.addEventListener("click", eventListener);
 
 // Example books
 addBookToLibrary("The Hobbit", "Tolkien", 295, "yes");
 addBookToLibrary("Angelic Aura", "Jesus", 15, "no");
 addBookToLibrary("Dark Solitude", "Satan", 666, "no");
 addBookToLibrary("The Bible", "God", 999, "yes");
-console.table(myLibrary);
+
+// remove book from library by clicking X button
+const removeBook = (e) => {
+  // select the event target specific dataset number and remove the TR with the same dataset number as the e.target
+  const dataNumberValue = e.target.dataset.number;
+  const trToRemove = tbody.querySelector(
+    `tr[data-number="${dataNumberValue}"]`
+  );
+  tbody.removeChild(trToRemove);
+};
 
 // Loop library and print books to table
 for (let i = 0; i < myLibrary.length; i++) {
   const tr = document.createElement("tr");
+  tr.setAttribute("data-number", `${i}`);
   tbody.appendChild(tr);
 
   // Print titles
@@ -88,4 +185,15 @@ for (let i = 0; i < myLibrary.length; i++) {
   const newRead = document.createElement("td");
   tr.appendChild(newRead);
   newRead.textContent = myLibrary[i].read;
+
+  // remove button
+  const newRemove = document.createElement("button");
+  newRemove.setAttribute("data-number", `${i}`);
+  tr.appendChild(newRemove);
+  newRemove.textContent = "X";
+  newRemove.addEventListener("click", removeBook);
 }
+
+// Book.prototype.toggleReadStatus = function () {
+//   this.read = this.read === "yes" ? "no" : "yes";
+// };
