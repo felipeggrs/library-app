@@ -16,6 +16,10 @@ function Book(title, author, pages, read) {
   };
 }
 
+Book.prototype.toggleReadStatus = function () {
+  this.read = this.read === "yes" ? "no" : "yes";
+};
+
 // Basic function to add new books to library
 function addBookToLibrary(title, author, pages, read) {
   const newBook = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
@@ -119,17 +123,39 @@ const eventListener = () => {
 
     // Display Read? Yes/No
     const newRead = document.createElement("td");
+    const lastChild =
+      +tbody.lastElementChild.previousElementSibling.getAttribute(
+        "data-number"
+      ) + 1;
+    newRead.setAttribute("data-number", lastChild);
     tr.appendChild(newRead);
     newRead.textContent = userRead;
 
     // remove button works since the data-number value from the tr (table row element) and the data number of the remove button are the same value upon its creation
     const newRemove = document.createElement("button");
-    const lastChild = tbody.lastElementChild.getAttribute("data-number");
     newRemove.setAttribute("data-number", lastChild);
     tr.setAttribute("data-number", lastChild);
     tr.appendChild(newRemove);
     newRemove.textContent = "X";
     newRemove.addEventListener("click", removeBook);
+
+    // toggle button
+    const newToggle = document.createElement("button");
+    const lastChildToggle =
+      +tbody.lastElementChild.previousElementSibling.getAttribute(
+        "data-number"
+      ) + 1;
+    newToggle.setAttribute("data-number", lastChildToggle);
+    tr.appendChild(newToggle);
+    newToggle.textContent = "T";
+
+    newToggle.addEventListener("click", (e) => {
+      const tdToToggle = tbody.querySelector(
+        `td[data-number="${e.target.dataset.number}"]`
+      );
+      myLibrary[e.target.dataset.number].toggleReadStatus();
+      tdToToggle.textContent = myLibrary[e.target.dataset.number].read;
+    });
 
     // reset input values after adding to library
     titleInput.value = "";
@@ -160,6 +186,15 @@ const removeBook = (e) => {
   tbody.removeChild(trToRemove);
 };
 
+// set data attribute to specific table cell containing read value
+function toggleRead(e) {
+  const tdToToggle = tbody.querySelector(
+    `td[data-number="${e.target.dataset.number}"]`
+  );
+  myLibrary[e.target.dataset.number].toggleReadStatus();
+  tdToToggle.textContent = myLibrary[e.target.dataset.number].read;
+}
+
 // Loop library and print books to table
 for (let i = 0; i < myLibrary.length; i++) {
   const tr = document.createElement("tr");
@@ -183,6 +218,7 @@ for (let i = 0; i < myLibrary.length; i++) {
 
   // Print Read? Yes/No
   const newRead = document.createElement("td");
+  newRead.setAttribute("data-number", `${i}`);
   tr.appendChild(newRead);
   newRead.textContent = myLibrary[i].read;
 
@@ -192,8 +228,11 @@ for (let i = 0; i < myLibrary.length; i++) {
   tr.appendChild(newRemove);
   newRemove.textContent = "X";
   newRemove.addEventListener("click", removeBook);
-}
 
-// Book.prototype.toggleReadStatus = function () {
-//   this.read = this.read === "yes" ? "no" : "yes";
-// };
+  // toggle button
+  const newToggle = document.createElement("button");
+  newToggle.setAttribute("data-number", `${i}`);
+  tr.appendChild(newToggle);
+  newToggle.textContent = "T";
+  newToggle.addEventListener("click", toggleRead);
+}
