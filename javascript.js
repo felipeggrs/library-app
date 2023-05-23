@@ -1,6 +1,6 @@
 const myLibrary = [];
-const tbody = document.querySelector("tbody");
 const body = document.querySelector("body");
+const tbody = document.querySelector("tbody");
 
 // Book constructor
 function Book(title, author, pages, read) {
@@ -8,28 +8,21 @@ function Book(title, author, pages, read) {
   this.author = author;
   this.pages = pages;
   this.read = read;
-  this.info = function () {
-    if (this.read === "yes") {
-      return `${title} by ${author}, ${pages} pages, already read.`;
-    }
-    return `${title} by ${author}, ${pages} pages, not read yet.`;
-  };
 }
 
 Book.prototype.toggleReadStatus = function () {
   this.read = this.read === "yes" ? "no" : "yes";
 };
 
-// Basic function to add new books to library
+// add new books to library array 'myLibrary'
 function addBookToLibrary(title, author, pages, read) {
   const newBook = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
   return myLibrary.push(newBook);
 }
 
-// open form button
+// add button to show form for the user to input the book information
 const newBookBtn = document.getElementById("newBookBtn");
-const eventListener = () => {
-  // create book form after click
+function createForm() {
   const btnFormContainer = document.createElement("div");
   btnFormContainer.setAttribute("id", "btnFormContainer");
 
@@ -37,7 +30,7 @@ const eventListener = () => {
   btnForm.setAttribute("method", "post");
   btnForm.setAttribute("action", "https://www.google.com");
 
-  // book title
+  // book title input field
   const titleInputLabel = document.createElement("label");
   titleInputLabel.setAttribute("for", "titleInput");
   titleInputLabel.textContent = "Title: ";
@@ -48,7 +41,7 @@ const eventListener = () => {
   titleInput.setAttribute("name", "titleInput");
   titleInput.setAttribute("placeholder", "Book Title");
 
-  // author
+  // author input field
   const authorInputLabel = document.createElement("label");
   authorInputLabel.setAttribute("for", "authorInput");
   authorInputLabel.textContent = "Author: ";
@@ -58,7 +51,7 @@ const eventListener = () => {
   authorInput.setAttribute("name", "authorInput");
   authorInput.setAttribute("placeholder", "Book Author");
 
-  // n of pages
+  // n of pages input field
   const pagesInputLabel = document.createElement("label");
   pagesInputLabel.setAttribute("for", "pagesInput");
   pagesInputLabel.textContent = "Pages: ";
@@ -68,7 +61,7 @@ const eventListener = () => {
   pagesInput.setAttribute("name", "pagesInput");
   pagesInput.setAttribute("placeholder", "Number of pages");
 
-  // read? yes/no
+  // read? yes/no input field
   const readInputLabel = document.createElement("label");
   readInputLabel.setAttribute("for", "readInput");
   readInputLabel.textContent = "Read: ";
@@ -78,7 +71,7 @@ const eventListener = () => {
   readInput.setAttribute("name", "readInput");
   readInput.setAttribute("placeholder", "Read? yes/no");
 
-  // print form
+  // print form to page
   body.appendChild(btnFormContainer);
   btnFormContainer.appendChild(btnForm);
   btnForm.appendChild(titleInputLabel);
@@ -165,16 +158,10 @@ const eventListener = () => {
   });
 
   // allows only 1 form
-  newBookBtn.removeEventListener("click", eventListener);
-};
+  newBookBtn.removeEventListener("click", createForm);
+}
 
-newBookBtn.addEventListener("click", eventListener);
-
-// Example books
-addBookToLibrary("The Hobbit", "Tolkien", 295, "yes");
-addBookToLibrary("Angelic Aura", "Jesus", 15, "no");
-addBookToLibrary("Dark Solitude", "Satan", 666, "no");
-addBookToLibrary("The Bible", "God", 999, "yes");
+newBookBtn.addEventListener("click", createForm);
 
 // remove book from library by clicking X button
 const removeBook = (e) => {
@@ -195,7 +182,10 @@ function toggleRead(e) {
   tdToToggle.textContent = myLibrary[e.target.dataset.number].read;
 }
 
-// Loop library and print books to table
+// Example books
+addBookToLibrary("The Hobbit", "Tolkien", 295, "yes");
+
+// Loop library and print example books to table
 for (let i = 0; i < myLibrary.length; i++) {
   const tr = document.createElement("tr");
   tr.setAttribute("data-number", `${i}`);
