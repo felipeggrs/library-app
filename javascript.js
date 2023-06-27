@@ -2,23 +2,41 @@ const myLibrary = [];
 const body = document.querySelector("body");
 const tbody = document.querySelector("tbody");
 
-// Book constructor
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
+// Book class
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+
+  toggleReadStatus() {
+    this.read = this.read === "yes" ? "no" : "yes";
+  }
+
+  addBookToLibrary() {
+    myLibrary.push(this);
+  }
 }
 
-Book.prototype.toggleReadStatus = function () {
-  this.read = this.read === "yes" ? "no" : "yes";
-};
+// Book constructor
+// function Book(title, author, pages, read) {
+//   this.title = title;
+//   this.author = author;
+//   this.pages = pages;
+//   this.read = read;
+// }
+
+// Book.prototype.toggleReadStatus = function () {
+//   this.read = this.read === "yes" ? "no" : "yes";
+// };
 
 // add new books to library array 'myLibrary'
-function addBookToLibrary(title, author, pages, read) {
-  const newBook = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
-  return myLibrary.push(newBook);
-}
+// function addBookToLibrary(title, author, pages, read) {
+//   const newBook = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
+//   return myLibrary.push(newBook);
+// }
 
 // add button to show form for the user to input the book information
 const newBookBtn = document.getElementById("newBookBtn");
@@ -94,7 +112,9 @@ function createForm() {
     const userPages = pagesInput.value;
     const userRead = readInput.value;
 
-    addBookToLibrary(userTitle, userAuthor, userPages, userRead);
+    // addBookToLibrary(userTitle, userAuthor, userPages, userRead);
+    const newBook = new Book(userTitle, userAuthor, userPages, userRead);
+    newBook.addBookToLibrary();
 
     const tr = document.createElement("tr");
     tbody.appendChild(tr);
@@ -183,7 +203,9 @@ function toggleRead(e) {
 }
 
 // Example books
-addBookToLibrary("The Hobbit", "Tolkien", 295, "yes");
+// addBookToLibrary("The Hobbit", "Tolkien", 295, "yes");
+const hobbit = new Book("The Hobbit", "Tolkien", 295, "yes");
+hobbit.addBookToLibrary();
 
 // Loop library and print example books to table
 for (let i = 0; i < myLibrary.length; i++) {
